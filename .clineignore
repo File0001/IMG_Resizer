@@ -1,0 +1,11 @@
+   # File yang DILARANG dibaca oleh AI
+   .env
+   .env.local
+   .env.production
+   secrets.json
+   credentials/
+   node_modules/
+   dist/
+   build/
+   *.log
+   .clineignore/
