@@ -20,6 +20,9 @@ Karakteristik:
 - Tidak ada database persisten.
 - Input dan output berupa file lokal Windows.
 - Tkinter menjadi boundary UI.
+- Input mendukung file gambar, folder rekursif, dan ZIP melalui `input_sources.py`.
+- ZIP diekstrak ke temporary directory dengan validasi path traversal dan batas resource.
+- `tkinterdnd2` menangani drop pada widget aplikasi; file dialog tetap menjadi fallback.
 - Perhitungan layout tidak bergantung pada GUI.
 - PyInstaller dan Inno Setup hanya digunakan saat distribusi.
 
@@ -30,7 +33,7 @@ Karakteristik:
 | Database | Tidak digunakan; belum ada kebutuhan histori/akun |
 | API | Tidak digunakan; komunikasi internal berupa fungsi Python |
 | Image engine | Pillow yang sudah digunakan |
-| GUI | Tkinter yang sudah digunakan |
+| GUI | Tkinter + `tkinterdnd2==0.6.3` untuk drag & drop |
 | Packaging | PyInstaller yang sudah digunakan |
 | Installer | Inno Setup yang sudah digunakan |
 
@@ -42,6 +45,8 @@ Karakteristik:
 IMG_Resizer/
 ├── cetak_gambar_massal_portrait_margin_fixed.py  # entry point, GUI, orkestrasi
 ├── layout.py                                     # kalkulasi layout terisolasi
+├── input_sources.py                              # normalisasi file, folder, dan ZIP
+├── requirements.txt                              # dependency runtime/build
 ├── CONTEXT.md                                   # konteks/checkpoint proyek
 ├── ARCHITECTURE.md                              # dokumen arsitektur ini
 ├── Cetak Gambar Massal.spec                     # konfigurasi PyInstaller
@@ -124,7 +129,7 @@ calculate_layout(
 
 ### Infrastruktur lokal
 
-Pillow menangani pembukaan gambar, EXIF, RGB, rotasi, resize, canvas, dan PDF. PyInstaller dan Inno Setup bukan bagian runtime.
+Pillow menangani pembukaan gambar, EXIF, RGB, rotasi, resize, canvas, dan PDF. `input_sources.py` menangani validasi input, folder, ZIP, temporary extraction, batas resource, dan deduplikasi. PyInstaller dan Inno Setup bukan bagian runtime.
 
 ## 4. Model data runtime
 
@@ -349,8 +354,8 @@ Setiap perubahan berikutnya harus:
 
 ## 15. Status dokumen
 
-- **Tanggal checkpoint:** 2026-09-30.
+- **Tanggal checkpoint:** 2026-10-01.
 - **Basis:** source aktual dan `CONTEXT.md`.
-- **Status:** baseline arsitektur desktop lokal; belum mencakup fitur yang belum disetujui.
+- **Status:** desktop lokal dengan input gambar, folder, ZIP, deduplikasi, dan drag & drop.
 
 

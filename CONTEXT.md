@@ -21,7 +21,7 @@
 - **Packaging executable:** PyInstaller.
 - **Installer Windows:** Inno Setup.
 - **Test framework:** belum digunakan; self-check memakai `assert` pada `layout.py`.
-- **Dependency manifest:** belum tersedia `requirements.txt`.
+- **Dependency manifest:** `requirements.txt` tersedia; `tkinterdnd2==0.6.3` digunakan untuk drag & drop.
 
 ## 3. Struktur file
 
@@ -224,6 +224,15 @@ Prinsip proyek: KISS, YAGNI, perubahan minimum, validasi pada trust boundary, da
 ### 2026-09-30 — Dokumentasi proyek diperluas
 
 - Tujuan, alur aplikasi, struktur file, aturan layout, packaging, validasi, risiko, dan roadmap pengembangan didokumentasikan di file ini.
+
+### 2026-10-01 — Input gambar, folder, ZIP, dan drag & drop
+
+- `tkinterdnd2==0.6.3` ditambahkan untuk drag & drop pada seluruh widget aplikasi.
+- File gambar, folder rekursif, dan ZIP masuk ke pipeline input terpadu.
+- ZIP memakai `zipfile` dan temporary directory dengan batas 2.000 entry, 100 MB per file, dan 1 GB total ekstraksi.
+- Path traversal ditolak; gambar divalidasi Pillow; input duplikat dihapus.
+- File invalid meminta konfirmasi sebelum melanjutkan.
+- `requirements.txt` dan hidden import PyInstaller diperbarui.
 
 ### 2026-09-30 — Baseline arsitektur sistem
 

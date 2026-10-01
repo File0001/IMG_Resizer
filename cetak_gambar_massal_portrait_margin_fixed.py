@@ -1,9 +1,52 @@
 import sys
 import tkinter as tk
 from tkinter import filedialog, messagebox
+from tkinterdnd2 import DND_FILES, TkinterDnD
 from PIL import Image, ImageOps
 import os
+import tempfile
+from input_sources import InputSourceError, collect_inputs
 from layout import calculate_layout, LayoutError
+
+SUPPORTED_INPUT_TYPES = [("Gambar atau ZIP", "*.jpg *.jpeg *.png *.bmp *.webp *.zip"), ("Semua file", "*.*")]
+workspace = tempfile.TemporaryDirectory()
+last_invalid_files = []
+
+
+def update_file_list():
+    listbox.delete(0, tk.END)
+    for file in selected_files:
+        listbox.insert(tk.END, os.path.basename(file))
+    label_jumlah.config(text=f"{len(selected_files)} gambar siap diproses")
+    btn_pdf.config(state=(tk.NORMAL if selected_files else tk.DISABLED))
+
+
+def add_input_paths(paths):
+    global selected_files, last_invalid_files
+    try:
+        new_files, invalid = collect_inputs(paths, workspace)
+    except InputSourceError as error:
+        messagebox.showerror("Input tidak valid", str(error))
+        return
+    if invalid:
+        last_invalid_files = invalid
+        preview = "\\n".join(f"- {item}" for item in invalid[:8])
+        if len(invalid) > 8:
+            preview += f"\\n- ... dan {len(invalid) - 8} lainnya"
+        if not messagebox.askyesno("File tidak valid", f"Ditemukan {len(invalid)} file yang diabaikan:\\n{preview}\\n\\nLanjutkan dengan {len(new_files)} gambar valid?"):
+            return
+    existing = set(os.path.normcase(os.path.abspath(item)) for item in selected_files)
+    selected_files.extend(item for item in new_files if os.path.normcase(os.path.abspath(item)) not in existing)
+    update_file_list()
+
+
+def on_drop(event):
+    add_input_paths(list(root.tk.splitlist(event.data)))
+
+
+def clear_files():
+    selected_files.clear()
+    update_file_list()
 
 def resource_path(relative_path):
     """Mencari file resource baik saat .py maupun saat menjadi .exe."""
@@ -48,28 +91,9 @@ selected_files = []
 def pilih_gambar():
     global selected_files
 
-    files = filedialog.askopenfilenames(
-        title="Pilih gambar",
-        filetypes=[
-            ("File gambar", "*.jpg *.jpeg *.png *.bmp *.webp"),
-            ("Semua file", "*.*")
-        ]
-    )
-
-    if not files:
-        return
-
-    selected_files = list(files)
-
-    label_jumlah.config(
-        text=f"{len(selected_files)} gambar dipilih"
-    )
-
-    # Tampilkan nama beberapa file
-    listbox.delete(0, tk.END)
-
-    for file in selected_files:
-        listbox.insert(tk.END, os.path.basename(file))
+    files = filedialog.askopenfilenames(title="Pilih gambar atau ZIP", filetypes=SUPPORTED_INPUT_TYPES)
+    if files:
+        add_input_paths(list(files))
 
 
 # ============================================================
@@ -231,7 +255,7 @@ def buat_pdf():
 # GUI
 # ============================================================
 
-root = tk.Tk()
+root = TkinterDnD.Tk()
 root.title("Cetak Gambar Massal")
 root.geometry("650x600")
 
@@ -255,6 +279,17 @@ subtitle = tk.Label(
 )
 subtitle.pack(pady=(0, 15))
 
+drop_zone = tk.Label(
+    root,
+    text="SERET GAMBAR, FOLDER, ATAU ZIP KE SINI\\n(JPG, JPEG, PNG, BMP, WEBP, ZIP)",
+    relief="groove",
+    bd=2,
+    padx=20,
+    pady=14,
+    font=("Segoe UI", 10, "bold")
+)
+drop_zone.pack(fill="x", padx=30, pady=(0, 10))
+
 
 # ------------------------------------------------------------
 # Tombol pilih gambar
@@ -272,6 +307,16 @@ btn_pilih = tk.Button(
     height=2
 )
 btn_pilih.pack(side="left")
+
+btn_clear = tk.Button(
+    frame_pilih,
+    text="HAPUS SEMUA",
+    font=("Segoe UI", 10),
+    command=clear_files,
+    width=14,
+    height=2
+)
+btn_clear.pack(side="left", padx=(10, 0))
 
 label_jumlah = tk.Label(
     frame_pilih,
@@ -382,6 +427,20 @@ btn_pdf = tk.Button(
     height=2
 )
 btn_pdf.pack(pady=20)
+btn_pdf.config(state=tk.DISABLED)
 
 
+def register_drop_widgets(widget):
+    try:
+        widget.drop_target_register(DND_FILES)
+        widget.dnd_bind("<<Drop>>", on_drop)
+    except tk.TclError:
+        pass
+    for child in widget.winfo_children():
+        register_drop_widgets(child)
+
+
+register_drop_widgets(root)
 root.mainloop()
+workspace.cleanup()
+
