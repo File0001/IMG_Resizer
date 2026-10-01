@@ -262,20 +262,53 @@ root.geometry("650x600")
 root.iconbitmap(resource_path("icon.ico"))
 root.resizable(False, False)
 
+# Palet soft yang mengambil identitas biru, magenta, dan emas dari logo.
+COLOR_BG = "#F6F8FC"
+COLOR_PANEL = "#FFFFFF"
+COLOR_NAVY = "#243B8F"
+COLOR_NAVY_HOVER = "#304DAA"
+COLOR_BLUE_SOFT = "#E8EEFF"
+COLOR_MAGENTA = "#B64A72"
+COLOR_MAGENTA_HOVER = "#FCEEF5"
+COLOR_GOLD = "#D9A441"
+COLOR_TEXT = "#1F2937"
+COLOR_MUTED = "#667085"
+COLOR_BORDER = "#D9E1F2"
+COLOR_DISABLED = "#C7D0E8"
+
+root.configure(bg=COLOR_BG)
 font_normal = ("Segoe UI", 10)
 font_title = ("Segoe UI", 16, "bold")
+
+
+def bind_button_hover(button, normal, hover):
+    button.bind("<Enter>", lambda _event: button.configure(bg=hover))
+    button.bind("<Leave>", lambda _event: button.configure(bg=normal))
+
+
+def set_drop_zone_active(active):
+    drop_zone.configure(
+        bg=COLOR_MAGENTA_HOVER if active else COLOR_BLUE_SOFT,
+        fg=COLOR_MAGENTA if active else COLOR_NAVY,
+        highlightbackground=COLOR_MAGENTA if active else COLOR_BORDER,
+    )
+
 
 title = tk.Label(
     root,
     text="CETAK GAMBAR MASSAL",
-    font=font_title
+    font=font_title,
+    bg=COLOR_BG,
+    fg=COLOR_NAVY
 )
 title.pack(pady=(20, 5))
 
 subtitle = tk.Label(
     root,
     text="Pilih banyak gambar → atur ukuran → buat PDF A4",
-    font=("Segoe UI", 9)
+    font=("Segoe UI", 9),
+    bg=COLOR_BG,
+    fg=COLOR_MUTED
 )
 subtitle.pack(pady=(0, 15))
 
@@ -283,11 +316,18 @@ drop_zone = tk.Label(
     root,
     text="SERET GAMBAR, FOLDER, ATAU ZIP KE SINI\\n(JPG, JPEG, PNG, BMP, WEBP, ZIP)",
     relief="groove",
-    bd=2,
+    bd=1,
     padx=20,
     pady=14,
-    font=("Segoe UI", 10, "bold")
+    font=("Segoe UI", 10, "bold"),
+    bg=COLOR_BLUE_SOFT,
+    fg=COLOR_NAVY,
+    highlightthickness=2,
+    highlightbackground=COLOR_BORDER,
+    highlightcolor=COLOR_MAGENTA
 )
+drop_zone.bind("<Enter>", lambda _event: set_drop_zone_active(True))
+drop_zone.bind("<Leave>", lambda _event: set_drop_zone_active(False))
 drop_zone.pack(fill="x", padx=30, pady=(0, 10))
 
 
@@ -295,7 +335,7 @@ drop_zone.pack(fill="x", padx=30, pady=(0, 10))
 # Tombol pilih gambar
 # ------------------------------------------------------------
 
-frame_pilih = tk.Frame(root)
+frame_pilih = tk.Frame(root, bg=COLOR_BG)
 frame_pilih.pack(fill="x", padx=30)
 
 btn_pilih = tk.Button(
@@ -304,8 +344,15 @@ btn_pilih = tk.Button(
     font=("Segoe UI", 10, "bold"),
     command=pilih_gambar,
     width=18,
-    height=2
+    height=2,
+    bg=COLOR_NAVY,
+    fg=COLOR_PANEL,
+    activebackground=COLOR_NAVY_HOVER,
+    activeforeground=COLOR_PANEL,
+    relief="flat",
+    cursor="hand2"
 )
+bind_button_hover(btn_pilih, COLOR_NAVY, COLOR_NAVY_HOVER)
 btn_pilih.pack(side="left")
 
 btn_clear = tk.Button(
@@ -314,14 +361,24 @@ btn_clear = tk.Button(
     font=("Segoe UI", 10),
     command=clear_files,
     width=14,
-    height=2
+    height=2,
+    bg=COLOR_PANEL,
+    fg=COLOR_MAGENTA,
+    activebackground=COLOR_MAGENTA_HOVER,
+    activeforeground=COLOR_MAGENTA,
+    relief="solid",
+    bd=1,
+    cursor="hand2"
 )
+bind_button_hover(btn_clear, COLOR_PANEL, COLOR_MAGENTA_HOVER)
 btn_clear.pack(side="left", padx=(10, 0))
 
 label_jumlah = tk.Label(
     frame_pilih,
     text="Belum ada gambar",
-    font=font_normal
+    font=font_normal,
+    bg=COLOR_BG,
+    fg=COLOR_MUTED
 )
 label_jumlah.pack(side="left", padx=15)
 
@@ -333,7 +390,16 @@ label_jumlah.pack(side="left", padx=15)
 listbox = tk.Listbox(
     root,
     height=10,
-    font=("Consolas", 9)
+    font=("Consolas", 9),
+    bg=COLOR_PANEL,
+    fg=COLOR_TEXT,
+    selectbackground=COLOR_BLUE_SOFT,
+    selectforeground=COLOR_NAVY,
+    relief="solid",
+    bd=1,
+    highlightthickness=1,
+    highlightbackground=COLOR_BORDER,
+    highlightcolor=COLOR_NAVY
 )
 listbox.pack(
     fill="x",
@@ -351,7 +417,11 @@ frame_setting = tk.LabelFrame(
     text=" Pengaturan ",
     font=("Segoe UI", 10, "bold"),
     padx=15,
-    pady=10
+    pady=10,
+    bg=COLOR_PANEL,
+    fg=COLOR_NAVY,
+    bd=1,
+    relief="solid"
 )
 frame_setting.pack(
     fill="x",
@@ -362,13 +432,23 @@ frame_setting.pack(
 tk.Label(
     frame_setting,
     text="Lebar gambar (cm):",
-    font=font_normal
+    font=font_normal,
+    bg=COLOR_PANEL,
+    fg=COLOR_TEXT
 ).grid(row=0, column=0, sticky="w", pady=5)
 
 entry_lebar = tk.Entry(
     frame_setting,
     width=10,
-    font=font_normal
+    font=font_normal,
+    bg=COLOR_PANEL,
+    fg=COLOR_TEXT,
+    insertbackground=COLOR_NAVY,
+    relief="solid",
+    bd=1,
+    highlightthickness=1,
+    highlightbackground=COLOR_BORDER,
+    highlightcolor=COLOR_NAVY
 )
 entry_lebar.insert(0, "3")
 entry_lebar.grid(row=0, column=1, padx=10)
@@ -376,13 +456,23 @@ entry_lebar.grid(row=0, column=1, padx=10)
 tk.Label(
     frame_setting,
     text="Tinggi gambar (cm):",
-    font=font_normal
+    font=font_normal,
+    bg=COLOR_PANEL,
+    fg=COLOR_TEXT
 ).grid(row=1, column=0, sticky="w", pady=5)
 
 entry_tinggi = tk.Entry(
     frame_setting,
     width=10,
-    font=font_normal
+    font=font_normal,
+    bg=COLOR_PANEL,
+    fg=COLOR_TEXT,
+    insertbackground=COLOR_NAVY,
+    relief="solid",
+    bd=1,
+    highlightthickness=1,
+    highlightbackground=COLOR_BORDER,
+    highlightcolor=COLOR_NAVY
 )
 entry_tinggi.insert(0, "3")
 entry_tinggi.grid(row=1, column=1, padx=10)
@@ -390,13 +480,23 @@ entry_tinggi.grid(row=1, column=1, padx=10)
 tk.Label(
     frame_setting,
     text="Jarak antar gambar (cm):",
-    font=font_normal
+    font=font_normal,
+    bg=COLOR_PANEL,
+    fg=COLOR_TEXT
 ).grid(row=2, column=0, sticky="w", pady=5)
 
 entry_jarak = tk.Entry(
     frame_setting,
     width=10,
-    font=font_normal
+    font=font_normal,
+    bg=COLOR_PANEL,
+    fg=COLOR_TEXT,
+    insertbackground=COLOR_NAVY,
+    relief="solid",
+    bd=1,
+    highlightthickness=1,
+    highlightbackground=COLOR_BORDER,
+    highlightcolor=COLOR_NAVY
 )
 entry_jarak.insert(0, "0.2")
 entry_jarak.grid(row=2, column=1, padx=10)
@@ -404,13 +504,17 @@ entry_jarak.grid(row=2, column=1, padx=10)
 tk.Label(
     frame_setting,
     text="Kertas:",
-    font=font_normal
+    font=font_normal,
+    bg=COLOR_PANEL,
+    fg=COLOR_TEXT
 ).grid(row=0, column=2, sticky="w", padx=(50, 10))
 
 tk.Label(
     frame_setting,
     text="A4",
-    font=("Segoe UI", 10, "bold")
+    font=("Segoe UI", 10, "bold"),
+    bg=COLOR_PANEL,
+    fg=COLOR_GOLD
 ).grid(row=0, column=3, sticky="w")
 
 
@@ -424,10 +528,18 @@ btn_pdf = tk.Button(
     font=("Segoe UI", 12, "bold"),
     command=buat_pdf,
     width=25,
-    height=2
+    height=2,
+    bg=COLOR_NAVY,
+    fg=COLOR_PANEL,
+    activebackground=COLOR_NAVY_HOVER,
+    activeforeground=COLOR_PANEL,
+    disabledforeground=COLOR_DISABLED,
+    relief="flat",
+    cursor="hand2"
 )
 btn_pdf.pack(pady=20)
 btn_pdf.config(state=tk.DISABLED)
+bind_button_hover(btn_pdf, COLOR_NAVY, COLOR_NAVY_HOVER)
 
 
 def register_drop_widgets(widget):

@@ -234,6 +234,12 @@ Prinsip proyek: KISS, YAGNI, perubahan minimum, validasi pada trust boundary, da
 - File invalid meminta konfirmasi sebelum melanjutkan.
 - `requirements.txt` dan hidden import PyInstaller diperbarui.
 
+### 2026-10-01 — Penyegaran visual UI
+
+- Palet UI soft berbasis identitas logo diterapkan tanpa dependency baru: navy sebagai warna utama, magenta sebagai aksen, dan emas sebagai highlight.
+- Background, drop zone, tombol, daftar file, panel pengaturan, label, dan input diberi styling konsisten dengan state hover/focus sederhana.
+- Alur input, drag & drop, pemrosesan gambar, dan pembuatan PDF tidak diubah.
+
 ### 2026-09-30 — Baseline arsitektur sistem
 
 - `ARCHITECTURE.md` ditambahkan.
