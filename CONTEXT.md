@@ -240,6 +240,12 @@ Prinsip proyek: KISS, YAGNI, perubahan minimum, validasi pada trust boundary, da
 - Background, drop zone, tombol, daftar file, panel pengaturan, label, dan input diberi styling konsisten dengan state hover/focus sederhana.
 - Alur input, drag & drop, pemrosesan gambar, dan pembuatan PDF tidak diubah.
 
+### 2026-10-01 — Polishing UI tahap kedua
+
+- Tipografi tombol diseragamkan, ukuran tombol dibuat lebih compact, dan spacing antar-section dinormalisasi.
+- Drop zone menggunakan bentuk flat dengan border soft; hover, focus, drag-over, dan disabled state tetap dipertahankan.
+- Tidak ada perubahan pada layout fungsional, event handler, dependency, atau pipeline pemrosesan.
+
 ### 2026-09-30 — Baseline arsitektur sistem
 
 - `ARCHITECTURE.md` ditambahkan.

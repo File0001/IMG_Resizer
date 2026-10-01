@@ -282,8 +282,16 @@ font_title = ("Segoe UI", 16, "bold")
 
 
 def bind_button_hover(button, normal, hover):
-    button.bind("<Enter>", lambda _event: button.configure(bg=hover))
-    button.bind("<Leave>", lambda _event: button.configure(bg=normal))
+    def set_hover(_event):
+        if button["state"] != tk.DISABLED:
+            button.configure(bg=hover)
+
+    def set_normal(_event):
+        if button["state"] != tk.DISABLED:
+            button.configure(bg=normal)
+
+    button.bind("<Enter>", set_hover)
+    button.bind("<Leave>", set_normal)
 
 
 def set_drop_zone_active(active):
@@ -301,7 +309,7 @@ title = tk.Label(
     bg=COLOR_BG,
     fg=COLOR_NAVY
 )
-title.pack(pady=(20, 5))
+title.pack(pady=(20, 4))
 
 subtitle = tk.Label(
     root,
@@ -310,15 +318,15 @@ subtitle = tk.Label(
     bg=COLOR_BG,
     fg=COLOR_MUTED
 )
-subtitle.pack(pady=(0, 15))
+subtitle.pack(pady=(0, 16))
 
 drop_zone = tk.Label(
     root,
     text="SERET GAMBAR, FOLDER, ATAU ZIP KE SINI\\n(JPG, JPEG, PNG, BMP, WEBP, ZIP)",
-    relief="groove",
-    bd=1,
+    relief="flat",
+    bd=0,
     padx=20,
-    pady=14,
+    pady=16,
     font=("Segoe UI", 10, "bold"),
     bg=COLOR_BLUE_SOFT,
     fg=COLOR_NAVY,
@@ -344,7 +352,7 @@ btn_pilih = tk.Button(
     font=("Segoe UI", 10, "bold"),
     command=pilih_gambar,
     width=18,
-    height=2,
+    height=1,
     bg=COLOR_NAVY,
     fg=COLOR_PANEL,
     activebackground=COLOR_NAVY_HOVER,
@@ -358,10 +366,10 @@ btn_pilih.pack(side="left")
 btn_clear = tk.Button(
     frame_pilih,
     text="HAPUS SEMUA",
-    font=("Segoe UI", 10),
+    font=("Segoe UI", 10, "bold"),
     command=clear_files,
     width=14,
-    height=2,
+    height=1,
     bg=COLOR_PANEL,
     fg=COLOR_MAGENTA,
     activebackground=COLOR_MAGENTA_HOVER,
@@ -404,7 +412,7 @@ listbox = tk.Listbox(
 listbox.pack(
     fill="x",
     padx=30,
-    pady=15
+    pady=(16, 12)
 )
 
 
@@ -417,7 +425,7 @@ frame_setting = tk.LabelFrame(
     text=" Pengaturan ",
     font=("Segoe UI", 10, "bold"),
     padx=15,
-    pady=10,
+    pady=12,
     bg=COLOR_PANEL,
     fg=COLOR_NAVY,
     bd=1,
@@ -426,7 +434,7 @@ frame_setting = tk.LabelFrame(
 frame_setting.pack(
     fill="x",
     padx=30,
-    pady=5
+    pady=8
 )
 
 tk.Label(
@@ -525,10 +533,10 @@ tk.Label(
 btn_pdf = tk.Button(
     root,
     text="BUAT PDF",
-    font=("Segoe UI", 12, "bold"),
+    font=("Segoe UI", 11, "bold"),
     command=buat_pdf,
-    width=25,
-    height=2,
+    width=23,
+    height=1,
     bg=COLOR_NAVY,
     fg=COLOR_PANEL,
     activebackground=COLOR_NAVY_HOVER,
@@ -537,7 +545,7 @@ btn_pdf = tk.Button(
     relief="flat",
     cursor="hand2"
 )
-btn_pdf.pack(pady=20)
+btn_pdf.pack(pady=(16, 20))
 btn_pdf.config(state=tk.DISABLED)
 bind_button_hover(btn_pdf, COLOR_NAVY, COLOR_NAVY_HOVER)
 
