@@ -81,6 +81,20 @@ def cm_to_mm(cm):
     return float(cm) * 10
 
 
+def unique_output_path(path):
+    """Kembalikan path unik; jika sudah ada, tambahkan (1), (2), dst."""
+    if not os.path.exists(path):
+        return path
+    directory, filename = os.path.split(path)
+    stem, ext = os.path.splitext(filename)
+    index = 1
+    while True:
+        candidate = os.path.join(directory, f"{stem}({index}){ext}")
+        if not os.path.exists(candidate):
+            return candidate
+        index += 1
+
+
 # ============================================================
 # PILIH GAMBAR
 # ============================================================
@@ -170,6 +184,9 @@ def buat_pdf():
 
     if not output_file:
         return
+
+    # Hindari menimpa file yang sudah ada: ubah nama menjadi abu(1).pdf, dst.
+    output_file = unique_output_path(output_file)
 
     try:
         pages = []

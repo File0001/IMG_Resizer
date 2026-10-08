@@ -99,6 +99,7 @@ Fungsi utama:
 - `resource_path(relative_path)` — mencari resource source/PyInstaller.
 - `mm_to_px(mm)` — konversi millimeter ke pixel.
 - `cm_to_mm(cm)` — konversi centimeter ke millimeter.
+- `unique_output_path(path)` — mengubah nama file output agar tidak menimpa file yang sudah ada (`abu.pdf` → `abu(1).pdf`).
 - `pilih_gambar()` — memilih dan menampilkan daftar file.
 - `buat_pdf()` — memvalidasi input, menghitung layout, mengolah gambar, dan menyimpan PDF.
 
@@ -179,7 +180,7 @@ Error pemrosesan file ditangkap dan ditampilkan melalui `messagebox`. Error inte
 
 ### Prioritas menengah
 
-1. Belum ada konfirmasi khusus sebelum menimpa PDF yang sudah ada.
+1. Nama file output yang sudah ada di-rename otomatis (`abu.pdf` → `abu(1).pdf`, lalu `abu(2).pdf`, dst.) sehingga tidak menimpa file yang tidak diinginkan.
 2. File non-gambar masih dapat dipilih melalui `*.*` dan baru gagal saat diproses.
 3. `nan`, `inf`, nilai ekstrem, dan batas maksimum belum divalidasi eksplisit.
 4. Hanya mendukung A4 portrait; belum mendukung F4, Letter, landscape, custom paper, atau margin custom.
@@ -251,6 +252,12 @@ Prinsip proyek: KISS, YAGNI, perubahan minimum, validasi pada trust boundary, da
 - `ARCHITECTURE.md` ditambahkan.
 - Arsitektur ditetapkan sebagai desktop lokal tanpa server, API network, atau database.
 - Model data runtime, struktur folder, diagram Mermaid, teknologi yang disetujui, quality gates, serta keputusan yang belum boleh diasumsikan didokumentasikan.
+
+### 2026-10-06 — Auto-rename output duplikat
+
+- Ditambahkan `unique_output_path(path)` pada source utama: jika nama file PDF tujuan sudah ada, ditambahkan akhiran `(1)`, `(2)`, dst. sebelum ekstensi (perilaku seperti Windows Explorer).
+- `buat_pdf()` memakai helper ini tepat sebelum menyimpan PDF, sehingga file yang sudah ada tidak tertimpa tanpa sengaja.
+- Nama file final ditampilkan pada messagebox sukses.
 
 ## 13. Perintah verifikasi
 
